@@ -1,0 +1,3 @@
+[bandit]
+exclude = test_
+skips = B322

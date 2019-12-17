@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "smorest-full"
+version = "0.0.1"
+description = "A Clean And Full Stack Flask Smorest Example"
+authors = ["ssfdust <ssfdust@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+celery = "^4.3.0"
+toml = "^0.10.0"
+jinja2 = "^2.10.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+invoke = "^1.3.0"
+colorlog = "^4.0.2"
+alembic = "^1.3.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
