@@ -3,11 +3,9 @@
 模板相关的Invoke模块
 """
 import logging
-import re
 import os
 import datetime
 import shutil
-import sys
 
 from invoke import task
 from tasks.app.consts import (
@@ -24,6 +22,7 @@ from tasks.app.consts import (
     EOF_PEMISSIONS,
 )
 from tasks.app._utils import create_dirs
+from tasks.app.crud import CrudOpts
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -50,35 +49,6 @@ def generate_config(context):
     log.info("配置文件生成完毕.")
 
 
-def prepare_render_opts(module_name: str, module_name_singular: str, module_title: str):
-    if not module_name:
-        log.critical("请提供模块名")
-        sys.exit(1)
-
-    if not re.match("^[a-zA-Z0-9_]+$", module_name):
-        log.critical("模块名中包含特殊字符" "([a-zA-Z0-9_]+)")
-        sys.exit(1)
-
-    if not module_name_singular:
-        module_name_singular = module_name[:-1]
-
-    if not module_title:
-        module_title = " ".join([word.capitalize() for word in module_name.split("_")])
-
-    model_name = "".join(
-        [word.capitalize() for word in module_name_singular.split("_")]
-    )
-
-    return dict(
-        module_name=module_name,
-        module_name_singular=module_name_singular,
-        module_title=module_title,
-        module_namespace=module_name.replace("_", "-"),
-        model_name=model_name,
-        description="",
-        year=datetime.date.today().year
-    )
-
 @task(
     help={
         "module_name": "模块名称",
@@ -102,9 +72,9 @@ def crud_module(
 
     """
     from tasks.app.renders import render_crud_modules
-    config = prepare_render_opts(module_name, module_name_singular, module_title)
+    opts = CrudOpts(module_name, module_name_singular, module_title)
 
-    render_crud_modules(module_name, config)
+    render_crud_modules(module_name, opts.to_config())
 
     # permissions_adder(context, model_name=config["model_name"], module_title=config["module_title"])
 
