@@ -6,6 +6,7 @@ import logging
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
+
 class CrudOpts:
 
     def __init__(self, module_name: str, module_name_singular: str, module_title: str):

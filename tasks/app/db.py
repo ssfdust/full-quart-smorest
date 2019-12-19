@@ -95,7 +95,7 @@ def migrate(
 
 
 @app_context_task(
-    help={"revision": "revision标志", "directory": "迁移脚本目录",}
+    help={"revision": "revision标志", "directory": "迁移脚本目录"}
 )
 def edit(context, revision="current", directory="migrations"):
     """编辑一个迁移脚本"""

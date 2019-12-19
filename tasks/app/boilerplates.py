@@ -26,6 +26,7 @@ from tasks.app.crud import CrudOpts
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
+
 @task
 def generate_config(context):
     # pylint: disable=unused-argument
