@@ -7,6 +7,7 @@ import re
 import os
 import datetime
 import shutil
+import sys
 
 from invoke import task
 from tasks.app.consts import (
@@ -49,6 +50,35 @@ def generate_config(context):
     log.info("配置文件生成完毕.")
 
 
+def prepare_render_opts(module_name: str, module_name_singular: str, module_title: str):
+    if not module_name:
+        log.critical("请提供模块名")
+        sys.exit(1)
+
+    if not re.match("^[a-zA-Z0-9_]+$", module_name):
+        log.critical("模块名中包含特殊字符" "([a-zA-Z0-9_]+)")
+        sys.exit(1)
+
+    if not module_name_singular:
+        module_name_singular = module_name[:-1]
+
+    if not module_title:
+        module_title = " ".join([word.capitalize() for word in module_name.split("_")])
+
+    model_name = "".join(
+        [word.capitalize() for word in module_name_singular.split("_")]
+    )
+
+    return dict(
+        module_name=module_name,
+        module_name_singular=module_name_singular,
+        module_title=module_title,
+        module_namespace=module_name.replace("_", "-"),
+        model_name=model_name,
+        description="",
+        year=datetime.date.today().year
+    )
+
 @task(
     help={
         "module_name": "模块名称",
@@ -58,7 +88,7 @@ def generate_config(context):
     }
 )
 def crud_module(
-    context, module_name="", module_name_singular="", module_title="", description=""
+    context, module_name="", module_name_singular="", module_title=""
 ):
     # pylint: disable=unused-argument
     """
@@ -68,67 +98,15 @@ def crud_module(
     用法:
     $ inv app.boilerplates.crud-module --module-name=articles \
                 --module-name-singular=article \
-                --description=文章的增删改查API \
                 --module_title=文章
 
     """
-    try:
-        import jinja2
-    except ImportError:
-        log.critical("缺少jinja2模块，请通过`pip install jinja2`安装")
-        return
+    from tasks.app.renders import render_crud_modules
+    config = prepare_render_opts(module_name, module_name_singular, module_title)
 
-    if not module_name:
-        log.critical("请提供模块名")
-        return
+    render_crud_modules(module_name, config)
 
-    if not re.match("^[a-zA-Z0-9_]+$", module_name):
-        log.critical("模块名中包含特殊字符" "([a-zA-Z0-9_]+)")
-        return
-
-    if not module_name_singular:
-        module_name_singular = module_name[:-1]
-
-    module_path = "app/modules/%s" % module_name
-
-    if not module_title:
-        module_title = " ".join([word.capitalize() for word in module_name.split("_")])
-
-    model_name = "".join(
-        [word.capitalize() for word in module_name_singular.split("_")]
-    )
-
-    if os.path.exists(module_path):
-        log.critical("模块 `%s` 已存在.", module_name)
-        return
-
-    os.makedirs(module_path)
-
-    env = jinja2.Environment(
-        autoescape=True,
-        loader=jinja2.FileSystemLoader("tasks/app/templates/crud_module"),
-    )
-
-    # 从.AUTHOR中获取author
-    for template_file in (
-        "__init__",
-        "models",
-        "params",
-        "resources",
-        "schemas",
-    ):
-        template = env.get_template("%s.py.template" % template_file)
-        template.stream(
-            module_name=module_name,
-            module_name_singular=module_name_singular,
-            module_title=module_title,
-            module_namespace=module_name.replace("_", "-"),
-            model_name=model_name,
-            description=description,
-            year=datetime.date.today().year,
-        ).dump("%s/%s.py" % (module_path, template_file))
-
-    permissions_adder(context, model_name=model_name, module_title=module_title)
+    # permissions_adder(context, model_name=config["model_name"], module_title=config["module_title"])
 
     log.info("模块 `%s` 创建成功.", module_name)
 

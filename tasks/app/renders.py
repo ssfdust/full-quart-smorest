@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
+from pathlib import Path
 from typing import List, Dict
 from tasks.app.config import Config
 from tasks.app.consts import CONFIG_PATH, NGINX_PATH, SQL_PATH
@@ -35,12 +36,10 @@ def render_config_to_toml(configs: Config):
     for config_type, config in configs.config_types.items():
         log.info("正在生成 %s 配置...", config_type)
         template_and_paths_list = [
-            ["config.template", CONFIG_PATH],
-            ["nginx.template", NGINX_PATH],
-            ["sql.template", SQL_PATH],
+            ["config.template", CONFIG_PATH.format(config=config_type)],
+            ["nginx.template", NGINX_PATH.format(config=config_type)],
+            ["sql.template", SQL_PATH.format(config=config_type)],
         ]
-        for _, conf_path in template_and_paths_list:
-            conf_path = "%s" % conf_path.format(config=config_type)
 
         render = Render("tasks/app/templates/configurations",
                         template_and_paths_list, config)
@@ -53,4 +52,28 @@ def render_config_to_dockercompose(configs: Config):
     render = Render("tasks/app/templates/configurations",
                     ["docker-compose.yml.template", "docker-compose.yml"],
                     configs.production_config)
+    render.render()
+
+
+def render_crud_modules(module_name: str, config: Dict):
+    module_path = Path("app/modules/%s" % module_name)
+
+    if module_path.exists():
+        log.critical("模块 `%s` 已存在.", module_name)
+        sys.exit(1)
+
+    module_path.mkdir(parents=True)
+
+    template_and_paths_list = [
+        ["%s.py.template" % template_file, "%s/%s.py" % (module_path, template_file)]
+        for template_file in (
+            "__init__",
+            "models",
+            "params",
+            "resources",
+            "schemas",
+        )
+    ]
+    render = Render("tasks/app/templates/crud_module",
+                    template_and_paths_list, config)
     render.render()

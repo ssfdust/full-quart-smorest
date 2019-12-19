@@ -9,7 +9,7 @@ from itertools import chain
 from typing import Dict
 
 from tasks.app._utils import rlinput
-from tasks.app.consts import CONFIG_PATH, SQL_PATH, NGINX_PATH
+from tasks.app.consts import CONFIG_PATH
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
