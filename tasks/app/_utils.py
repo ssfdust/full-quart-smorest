@@ -4,6 +4,8 @@ Invoke中App相关工具
 """
 import functools
 import platform
+from pathlib import Path
+import os
 
 try:
     import readline
@@ -11,6 +13,7 @@ except ImportError:
     pass
 
 from invoke import Task as BaseTask
+from tasks.app.consts import SQL_PATH, NGINX_PATH, CONFIG_PATH
 
 
 class Task(BaseTask):
@@ -75,9 +78,15 @@ def rlinput(prompt, prefill=""):
 
         sendkeys(prefill)
         return input(prompt)
-    else:
-        readline.set_startup_hook(lambda: readline.insert_text(prefill))
-        try:
-            return input(prompt)  # or raw_input in Python 2
-        finally:
-            readline.set_startup_hook()
+    readline.set_startup_hook(lambda: readline.insert_text(prefill))
+    try:
+        return input(prompt)  # or raw_input in Python 2
+    finally:
+        readline.set_startup_hook()
+
+
+def create_dirs():
+    for the_path in [CONFIG_PATH, NGINX_PATH, SQL_PATH]:
+        configdir = Path(the_path).parent
+        if not os.path.exists(configdir):
+            configdir.mkdir(parents=True)

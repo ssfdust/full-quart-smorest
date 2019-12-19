@@ -5,6 +5,7 @@ https://stackoverflow.com/questions/13564851/how-to-generate-keyboard-events-in-
 """
 
 import logging
+
 try:
     import win32console
 except ImportError:

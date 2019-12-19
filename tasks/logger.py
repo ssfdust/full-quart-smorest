@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+
 try:
     import colorlog
 except ImportError:
@@ -11,10 +12,12 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-FORMATTER = ("%(asctime)s "
-             "[%(log_color)s%(levelname)s%(reset)s] "
-             "[%(cyan)s%(name)s:%(lineno)s%(reset)s] "
-             "%(message_log_color)s%(message)s")
+FORMATTER = (
+    "%(asctime)s "
+    "[%(log_color)s%(levelname)s%(reset)s] "
+    "[%(cyan)s%(name)s:%(lineno)s%(reset)s] "
+    "%(message_log_color)s%(message)s"
+)
 
 COLORS = {
     "DEBUG": "bold_cyan",

@@ -18,7 +18,6 @@ from . import logger
 from . import app
 
 
-
 # NOTE: `namespace` or `ns` name is required!
 namespace = Collection(app,)
 

@@ -5,16 +5,7 @@ Shell相关的Invoke模块
 import sys
 from pprint import pprint
 
-import flask
-import IPython
-from IPython.terminal.ipapp import load_default_config
-from traitlets.config.loader import Config
 from invoke import task
-
-from app import app
-from app.modules.users.models import UserInfo
-from app.modules.auth.models import User
-from app.extensions import db
 
 
 @task
@@ -22,6 +13,15 @@ def enter(_):
     """
     进入IPython的开发shell，类似于flask shell
     """
+    import flask
+    import IPython
+    from IPython.terminal.ipapp import load_default_config
+    from traitlets.config.loader import Config
+
+    from app import app
+    from app.modules.users.models import UserInfo
+    from app.modules.auth.models import User
+    from app.extensions import db
 
     flask_app = app.app
 

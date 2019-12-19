@@ -26,12 +26,4 @@ def tests(context, directory="tests", with_cov=False, cov="", with_pdb=False):
     import pytest
 
     command = [directory]
-    if with_cov and not cov:
-        log.critical("pytest-cov已开启但是缺少cov参数")
-        return
-    elif with_cov and cov:
-        command.extend(["--cov-report", "term-missing", "--cov", cov])
-    if with_pdb:
-        command.extend(["--pdb"])
-    exit_code = pytest.main(command)
-    return exit_code
+    return pytest.main(command)
