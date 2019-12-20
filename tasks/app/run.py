@@ -24,27 +24,19 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 )
 def server(
     context,
-    host="127.0.0.1",
-    port=8000,
-    pty=False,
-    use_reloader=True,
+    bind="127.0.0.1:5000",
     debug=True,
     gunicorn=False,
-    install_dependencies=False,
 ):
     """
     启动服务器
     """
-    if install_dependencies:
-        context.invoke_execute(context, "app.dependencies.install")
-
     if gunicorn:
-        command = f"gunicorn -b {host}:{port} -k eventlet app.app:app"
-        context.run(command, pty=pty)
+        command = f"gunicorn -b {bind} -k eventlet app.app:app"
+        context.run(command, pty=True)
     else:
+        host, port = bind.split(":")
         command = f"python run.py -b {host} -p {port}"
         if debug:
-            command += " --debug"
-        if use_reloader:
-            command += " --use-reloader"
-        context.run(command, pty=pty)
+            command += " --debug --use-reloader"
+        context.run(command, pty=True)

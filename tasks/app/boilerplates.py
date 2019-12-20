@@ -84,33 +84,22 @@ def crud_module(
     log.info("请在app/factory.py中的ENABLED_MODULES中添加新模块以激活。")
 
 
-@task(help={"revert": "还原"})
-def apply_changes(_, revert=False):
+@task
+def apply_changes(context):
+    # pylint: disable=unused-argument
     """
     应用新模块的权限
     """
 
-    if os.path.exists(BACKUP_PERMISSIONS_FILE) and not revert:
+    if os.path.exists(BACKUP_PERMISSIONS_FILE):
         os.remove(BACKUP_PERMISSIONS_FILE)
-    if os.path.exists(NEW_PERMISSIONS_FILE) and revert:
-        os.remove(NEW_PERMISSIONS_FILE)
-    if not revert:
-        orders = [
-            [PERMISSIONS_FILE, BACKUP_PERMISSIONS_FILE],
-            [NEW_PERMISSIONS_FILE, PERMISSIONS_FILE],
-        ]
-    else:
-        orders = [
-            [PERMISSIONS_FILE, NEW_PERMISSIONS_FILE],
-            [BACKUP_PERMISSIONS_FILE, PERMISSIONS_FILE],
-        ]
+    orders = [
+        [PERMISSIONS_FILE, BACKUP_PERMISSIONS_FILE],
+        [NEW_PERMISSIONS_FILE, PERMISSIONS_FILE],
+    ]
     for orig, dst in orders:
-        if os.path.exists(orig):
-            log.info("移动%s到%s", orig, dst)
-            shutil.move(orig, dst)
-        else:
-            log.critical("%s不存在应用失败", orig)
-            return
+        log.info("移动%s到%s", orig, dst)
+        shutil.move(orig, dst)
     log.info("应用完毕")
 
 

@@ -114,7 +114,6 @@ def upgrade(
     sql=False,
     tag=None,
     x_arg=None,
-    app=None,
 ):
     """更新下一个数据库版本"""
     config = _get_config(directory, x_arg=x_arg)

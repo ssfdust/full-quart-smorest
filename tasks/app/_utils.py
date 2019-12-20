@@ -63,13 +63,9 @@ def app_context_task(*args, **kwargs):
             with app.app_context():
                 return func(*args, **kwargs)
 
-        # This is the default in Python 3, so we just make it backwards
-        # compatible with Python 2
-        if not hasattr(wrapper, "__wrapped__"):
-            wrapper.__wrapped__ = func
         return Task(wrapper, **kwargs)
 
-    return lambda func: app_context_task(func, **kwargs)
+    return app_context_task(func, **kwargs)
 
 
 def rlinput(prompt, prefill=""):
