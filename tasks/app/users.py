@@ -53,29 +53,14 @@ class UserFactory:
     help={
         "username": "用户名",
         "email": "用户邮箱",
+        "is-admin": "是否admin（默认：是）",
         "is-active": "启用（默认：是）",
     }
 )
-def create_super_user(context, username, email, is_active=True):
-    # pylint: disable=unused-argument
-    """
-    新建超级用户
-    """
-    factory = UserFactory(username, email, is_admin=True, is_active=is_active)
-    factory.create_user()
-
-
-@app_context_task(
-    help={
-        "username": "用户名",
-        "email": "用户邮箱",
-        "is-active": "启用（默认：是）",
-    }
-)
-def create_user(context, username, email, is_active=True):
+def create_user(context, username, email, is_admin=True, is_active=True):
     # pylint: disable=unused-argument
     """
     新建用户
     """
-    factory = UserFactory(username, email, is_admin=False, is_active=is_active)
+    factory = UserFactory(username, email, is_admin=is_admin, is_active=is_active)
     factory.create_user()
