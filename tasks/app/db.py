@@ -83,11 +83,6 @@ def migrate(
     directory="migrations",
     message=None,
     sql=False,
-    head="head",
-    splice=False,
-    branch_label=None,
-    version_path=None,
-    rev_id=None,
 ):
     """'revision --autogenerate'的简写"""
     config = _get_config(directory, opts=["autogenerate"])

@@ -2,56 +2,80 @@
 """
 与用户相关的Invoke模块
 """
+import getpass
 
-from ._utils import app_context_task
+from tasks.app._utils import app_context_task
+
+
+class UserFactory:
+
+    def __init__(self, username, email, is_admin, is_active):
+        self.username = username
+        self.email = email
+        self.is_admin = is_admin
+        self.is_active = is_active
+        self.password = None
+        self.avator_info = None
+        self.prepare_opts()
+        self.get_password()
+
+    def prepare_opts(self):
+        from app.modules.auth import ROLES
+        if self.is_admin:
+            self.avator_info = "Admin"
+            self.rolename = ROLES.SuperUser
+        else:
+            self.avator_info = "Default"
+            self.rolename = ROLES.User
+
+    def get_password(self):
+        if not self.password:
+            self.password = getpass.getpass("请输入密码")
+
+    def create_user(self):
+        from app.modules.auth.models import User
+        #  from app.extensions import bcrypt
+        #
+        #  pw_hash = bcrypt.generate_password_hash(self.password).decode('utf-8')
+
+        user = User(
+            username=self.username,
+            email=self.email,
+            active=self.is_active,
+        )
+        user.password = self.password
+        user.create_userinfo(avator_info=self.avator_info)
+        user.set_roles(self.rolename)
+        user.save()
 
 
 @app_context_task(
     help={
         "username": "用户名",
         "email": "用户邮箱",
-        "is-admin": "管理员权限（默认：是）",
         "is-active": "启用（默认：是）",
     }
 )
-def create_user(context, username, email, is_admin=True, is_active=True):
+def create_super_user(context, username, email, is_active=True):
+    # pylint: disable=unused-argument
+    """
+    新建超级用户
+    """
+    factory = UserFactory(username, email, is_admin=True, is_active=is_active)
+    factory.create_user()
+
+
+@app_context_task(
+    help={
+        "username": "用户名",
+        "email": "用户邮箱",
+        "is-active": "启用（默认：是）",
+    }
+)
+def create_user(context, username, email, is_active=True):
+    # pylint: disable=unused-argument
     """
     新建用户
     """
-    from app.modules.auth.models import User, Role
-    from app.modules.users.models import UserInfo
-    from app.modules.auth import ROLES
-    from app.modules.storages.models import Storages
-    from flask_security.utils import encrypt_password
-
-    password = input("Enter password: ")
-
-    new_user = User(
-        username=username,
-        password=encrypt_password(password),
-        email=email,
-        active=is_active,
-    )
-    if is_admin:
-        su_role = Role.get_by_name(ROLES.SuperUser)
-        new_user.roles.append(su_role)
-        avator = Storages(
-            name="AdminAvator.jpg",
-            storetype="avator",
-            saved=True,
-            filetype="image/jpeg",
-            path="default/AdminAvator.jpg",
-            uid=1,
-        )
-    else:
-        role = Role.get_by_name(ROLES.User)
-        new_user.roles.append(role)
-        avator = Storages(
-            name="DefaultAvator.jpg",
-            storetype="avator",
-            saved=True,
-            filetype="image/jpeg",
-            path="default/DefaultAvator.jpg",
-            uid=1,
-        )
-    UserInfo(user=new_user, avator=avator).save()
+    factory = UserFactory(username, email, is_admin=False, is_active=is_active)
+    factory.create_user()
