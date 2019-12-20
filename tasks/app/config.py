@@ -56,7 +56,9 @@ HELPS = {
 def rand_string(strlen=10):
     """生成数字字母特殊字符的随机字符串"""
     password_characters = (
-        string.ascii_letters + string.digits + string.punctuation.replace("'", "")
+        string.ascii_letters
+        + string.digits
+        + string.punctuation.replace("'", "")
     )
     return "".join(
         secrets.choice(password_characters) for i in range(strlen) if i != "'"

@@ -26,7 +26,9 @@ def invoke_execute(context, command_name, **kwargs):
     """
     执行Invoke Task的帮助函数
     """
-    results = Executor(namespace, config=context.config).execute((command_name, kwargs))
+    results = Executor(namespace, config=context.config).execute(
+        (command_name, kwargs)
+    )
     target_task = context.root_namespace[command_name]
     return results[target_task]
 
