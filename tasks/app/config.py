@@ -113,7 +113,8 @@ class _Config:
         if self.default_config != self.development_config:
             self.default_config.update(self.development_config)
             self._setting_keys = set(
-                key for key in self.default_config
+                key
+                for key in self.default_config
                 if key not in ["DB_URL_INFO", "BROKER_URL_INFO"]
             )
             self._random_keys = self._random_keys - self._setting_keys
@@ -128,7 +129,6 @@ class _Config:
 
 
 class _ConfigLoader:
-
     def load_configurations(self):
         for config_type, config in self.config_types:
             if not config:

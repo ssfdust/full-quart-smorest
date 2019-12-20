@@ -8,7 +8,6 @@ from tasks.app._utils import app_context_task
 
 
 class UserFactory:
-
     def __init__(self, username, email, is_admin, is_active):
         self.username = username
         self.email = email
@@ -21,6 +20,7 @@ class UserFactory:
 
     def prepare_opts(self):
         from app.modules.auth import ROLES
+
         if self.is_admin:
             self.avator_info = "Admin"
             self.rolename = ROLES.SuperUser
@@ -34,15 +34,12 @@ class UserFactory:
 
     def create_user(self):
         from app.modules.auth.models import User
+
         #  from app.extensions import bcrypt
         #
         #  pw_hash = bcrypt.generate_password_hash(self.password).decode('utf-8')
 
-        user = User(
-            username=self.username,
-            email=self.email,
-            active=self.is_active,
-        )
+        user = User(username=self.username, email=self.email, active=self.is_active,)
         user.password = self.password
         user.create_userinfo(avator_info=self.avator_info)
         user.set_roles(self.rolename)

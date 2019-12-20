@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, Dict
 from tasks.app.config import Config
 from tasks.app.consts import CONFIG_PATH, NGINX_PATH, SQL_PATH
+
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 try:
@@ -16,13 +17,11 @@ except ImportError as e:
 
 
 class Render:
-
     def __init__(self, loader_path: str, template_and_paths: List[str], config: Dict):
         self.loader_path = loader_path
         self.config = config
         self.env = jinja2.Environment(
-            autoescape=True,
-            loader=jinja2.FileSystemLoader(self.loader_path)
+            autoescape=True, loader=jinja2.FileSystemLoader(self.loader_path)
         )
         self.template_and_paths = template_and_paths
 
@@ -41,17 +40,20 @@ def render_config_to_toml(configs: Config):
             ["sql.template", SQL_PATH.format(config=config_type)],
         ]
 
-        render = Render("tasks/app/templates/configurations",
-                        template_and_paths_list, config)
+        render = Render(
+            "tasks/app/templates/configurations", template_and_paths_list, config
+        )
         render.render()
 
         print()
 
 
 def render_config_to_dockercompose(configs: Config):
-    render = Render("tasks/app/templates/configurations",
-                    ["docker-compose.yml.template", "docker-compose.yml"],
-                    configs.production_config)
+    render = Render(
+        "tasks/app/templates/configurations",
+        ["docker-compose.yml.template", "docker-compose.yml"],
+        configs.production_config,
+    )
     render.render()
 
 
@@ -66,14 +68,7 @@ def render_crud_modules(module_name: str, config: Dict):
 
     template_and_paths_list = [
         ["%s.py.template" % template_file, "%s/%s.py" % (module_path, template_file)]
-        for template_file in (
-            "__init__",
-            "models",
-            "params",
-            "resources",
-            "schemas",
-        )
+        for template_file in ("__init__", "models", "params", "resources", "schemas",)
     ]
-    render = Render("tasks/app/templates/crud_module",
-                    template_and_paths_list, config)
+    render = Render("tasks/app/templates/crud_module", template_and_paths_list, config)
     render.render()

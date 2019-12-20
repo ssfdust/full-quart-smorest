@@ -58,9 +58,7 @@ def generate_config(context):
         "description": "模块描述",
     }
 )
-def crud_module(
-    context, module_name="", module_name_singular="", module_title=""
-):
+def crud_module(context, module_name="", module_name_singular="", module_title=""):
     # pylint: disable=unused-argument
     """
     新建一个增删改查模块
@@ -73,6 +71,7 @@ def crud_module(
 
     """
     from tasks.app.renders import render_crud_modules
+
     opts = CrudOpts(module_name, module_name_singular, module_title)
 
     render_crud_modules(module_name, opts.to_config())

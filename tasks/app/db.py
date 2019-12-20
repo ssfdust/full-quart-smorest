@@ -79,19 +79,14 @@ def init(context, directory="migrations", multidb=False):
     }
 )
 def migrate(
-    context,
-    directory="migrations",
-    message=None,
-    sql=False,
+    context, directory="migrations", message=None, sql=False,
 ):
     """'revision --autogenerate'的简写"""
     config = _get_config(directory, opts=["autogenerate"])
     command.revision(config, message, autogenerate=True, sql=sql)
 
 
-@app_context_task(
-    help={"revision": "revision标志", "directory": "迁移脚本目录"}
-)
+@app_context_task(help={"revision": "revision标志", "directory": "迁移脚本目录"})
 def edit(context, revision="current", directory="migrations"):
     """编辑一个迁移脚本"""
     config = _get_config(directory)
@@ -108,12 +103,7 @@ def edit(context, revision="current", directory="migrations"):
     }
 )
 def upgrade(
-    context,
-    directory="migrations",
-    revision="head",
-    sql=False,
-    tag=None,
-    x_arg=None,
+    context, directory="migrations", revision="head", sql=False, tag=None, x_arg=None,
 ):
     """更新下一个数据库版本"""
     config = _get_config(directory, x_arg=x_arg)

@@ -23,10 +23,7 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
     },
 )
 def server(
-    context,
-    bind="127.0.0.1:5000",
-    debug=True,
-    gunicorn=False,
+    context, bind="127.0.0.1:5000", debug=True, gunicorn=False,
 ):
     """
     启动服务器
