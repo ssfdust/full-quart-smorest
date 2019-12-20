@@ -6,6 +6,9 @@ import getpass
 
 from tasks.app._utils import app_context_task
 
+#  from app.extensions import bcrypt
+#
+#  pw_hash = bcrypt.generate_password_hash(self.password).decode('utf-8')
 
 class UserFactory:
     def __init__(self, username, email, is_admin, is_active):
@@ -34,10 +37,6 @@ class UserFactory:
 
     def create_user(self):
         from app.modules.auth.models import User
-
-        #  from app.extensions import bcrypt
-        #
-        #  pw_hash = bcrypt.generate_password_hash(self.password).decode('utf-8')
 
         user = User(
             username=self.username, email=self.email, active=self.is_active,

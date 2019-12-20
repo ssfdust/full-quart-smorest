@@ -99,10 +99,6 @@ def init_development_data(context, skip_on_failure=False):
         if not skip_on_failure:
             log.error("%s", exception)
         else:
-            log.debug(
-                "The following error was ignored due to the `skip_on_failure` flag: %s",
-                exception,
-            )
             log.info("Initializing development data step is skipped.")
     else:
         log.info("数据初始化成功.")

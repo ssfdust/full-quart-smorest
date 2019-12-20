@@ -68,7 +68,7 @@ def rand_string(strlen=10):
 class _Config:
 
     default_config = {
-        "SQLALCHEMY_DATABASE_URI": "postgresql://root:root@localhost/full-smorest",
+        "SQLALCHEMY_DATABASE_URI": "postgresql://root:root@localhost/mydb",
         "BABEL_DEFAULT_LOCALE": "zh_cn",
         "MODULE_BASE_PREFIX": "/api/v1",
         "BABEL_DEFAULT_TIMEZONE": "Asia/Shanghai",

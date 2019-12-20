@@ -78,7 +78,8 @@ def crud_module(
 
     render_crud_modules(module_name, opts.to_config())
 
-    # permissions_adder(context, model_name=config["model_name"], module_title=config["module_title"])
+    # permissions_adder(context, model_name=config["model_name"],
+    # module_title=config["module_title"])
 
     log.info("模块 `%s` 创建成功.", module_name)
 

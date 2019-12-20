@@ -19,7 +19,7 @@ try:
     from alembic import command
 except ImportError:
     log.warning(
-        "Alembic cannot be imported, so some app.db.* tasks won't be available!"
+        "Alembic can't be imported, some app.db.* tasks won't be available!"
     )
 else:
 
@@ -75,7 +75,7 @@ def init(context, directory="migrations", multidb=False):
         "version_path": "Specify specific path from config for version file",
         "branch_label": "Specify a branch label to apply to the new revision",
         "splice": "Allow a non-head revision as the 'head' to splice onto",
-        "head": "Specify head revision or <branchname>@head to base new revision on",
+        "head": "选择一个revision <branchname>@head to base new revision on",
         "sql": "显示待执行的Sql语句",
         "directory": "迁移脚本目录",
     }
