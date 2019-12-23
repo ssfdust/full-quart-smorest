@@ -1,3 +1,0 @@
-CREATE ROLE "root" WITH LOGIN ENCRYPTED PASSWORD 'root';
-CREATE DATABASE "full-smorest";
-GRANT ALL PRIVILEGES ON DATABASE "full-smorest" to "root";
