@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from quart_trio import QuartTrio
-from quart import abort
+from quart import abort, Quart
 from quart.views import MethodView
 from quart_smorest import Api, Blueprint
 import marshmallow as ma
-import triopg
+import asyncpg
 
-app = QuartTrio(__name__)
-app.config['OPENAPI_VERSION'] = '3.0.2'
+app = Quart(__name__)
+app.config["OPENAPI_VERSION"] = "3.0.2"
 api = Api(app)
-blp = Blueprint('pets',
-                'pets',
-                url_prefix='/pets',
-                description='Operations on pets')
+blp = Blueprint(
+    "pets", "pets", url_prefix="/pets", description="Operations on pets"
+)
 
 
 class ItemNotFoundError(Exception):
@@ -41,13 +39,15 @@ class Pet:
         {"id": 6, "name": "test6"},
         {"id": 7, "name": "test7"},
         {"id": 8, "name": "test8"},
-        {"id": 9, "name": "test9"}
+        {"id": 9, "name": "test9"},
     ]
 
     @classmethod
     def get(cls, filters):
         if filters and filters["name"]:
-            return [item for item in cls._list if item["name"] == filters["name"]]
+            return [
+                item for item in cls._list if item["name"] == filters["name"]
+            ]
         return cls._list
 
     @classmethod
@@ -67,17 +67,17 @@ class Pet:
         return found
 
 
-@blp.route('/')
+@blp.route("/")
 class Pets(MethodView):
-    @blp.arguments(PetQueryArgsSchema, location='query')
+    @blp.arguments(PetQueryArgsSchema, location="query")
     @blp.response(PetSchema(many=True))
     async def get(self, args):
         """List pets"""
-        async with triopg.connect("postgres://megalith-security") as conn:
-            cursor = await conn.execute(
-                "select * from users"
-            )
-            print(cursor.fetchall())
+        con = await asyncpg.connect(
+            "postgres://ssfdust@localhost/megalith-security"
+        )
+        cursor = await con.fetch("select * from users")
+        print(cursor)
         return Pet.get(filters=args)
 
     @blp.arguments(PetSchema)
@@ -88,7 +88,7 @@ class Pets(MethodView):
         return item
 
 
-@blp.route('/<int:pet_id>')
+@blp.route("/<int:pet_id>")
 class PetsById(MethodView):
     @blp.response(PetSchema)
     async def get(self, pet_id):

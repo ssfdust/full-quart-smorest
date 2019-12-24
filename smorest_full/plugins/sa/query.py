@@ -3,20 +3,20 @@
 """
 
 from functools import wraps
-from .abstract import StatementAbstract
+from .render import TableRender
+from .abstract import RenderableStatement
 
 
-class SAStatement(StatementAbstract):
-
+class SAQuery(RenderableStatement, TableRender):
     def get_sa_sql(self):
         pass
 
 
-def sql_decorator(cls: SAStatement):
+def query_decorator(cls: SAQuery):
     @wraps(cls)
     def wraper(*args, **kwargs):
         def get_sa_sql(self):
-            return self.sa_sql
+            return self.query.statement
 
         cls.get_sa_sql = get_sa_sql
 

@@ -9,17 +9,21 @@ python = "^3.8"
 celery = "^4.3.0"
 toml = "^0.10.0"
 jinja2 = "^2.10.3"
-quart-trio = { git = "https://github.com/ssfdust/quart-trio.git" }
 trio-asyncio = "^0.10.0"
 quart-smorest = { git = "https://github.com/hadware/quart-smorest.git" }
 tabulate = "^0.8.6"
 sqlparse = "^0.3.0"
+alchemy-mock = "^0.4.3"
+gino = "^0.8.5"
+loguru = "^0.4.0"
+pyperclip = "^1.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 invoke = "^1.3.0"
 colorlog = "^4.0.2"
 alembic = "^1.3.2"
+pytest-asyncio = "^0.10.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
